@@ -47,17 +47,16 @@ var HisrcCommand={
       this.name=fpath.substr(lslash+1,ldot-lslash-1);
       this.im=require('node-imagemagick');
       this.callback=fcallback;
-
-      this.im.identify(['-format','%wx%h',this.file],proxy(this.resize,this));
+      this.im.identify(this.file,proxy(this.resize,this));
     }catch(e){
       grunt.log.write('error '+e+"\n");
     }
   },
   resize: function(err,output){
     try{
-    grunt.log.write("Resizing image: "+output+"\n");
-    this.baseWidth=Number(output.split('x')[0]);
-    this.baseHeight=Number(output.split('x')[1]);
+    grunt.log.write("Resizing image: "+output.width+"x"+output.height+"\n");
+    this.baseWidth=Number(output.width);
+    this.baseHeight=Number(output.height);
     grunt.log.write("To size: "+Math.round(this.baseWidth/2)+"x"+Math.round(this.baseHeight/2)+"\n");
     this.im.resize({
       width:Math.round(this.baseWidth/2),
@@ -92,7 +91,7 @@ var HisrcCommand={
 /**
 * ResizeCommand
 * resizes the specified images or groups of images using the specified parameters
-* currently uses the same properties as node-imagemagick 
+* currently uses the same properties as node-imagemagick
 **/
 var ResizeCommand={
   props:undefined,
@@ -100,7 +99,7 @@ var ResizeCommand={
   context:undefined,
   im:undefined,
   init:function(pfrom,pto,pprops,pcallback,pcontext){
-    
+
     this.props=Object.create(pprops);
     this.props.srcPath=pfrom;
     this.props.dstPath=pto;
@@ -116,10 +115,10 @@ var ResizeCommand={
     if (err !== undefined && err !== null) {
       if (this.context.data.fatals === true) {
         grunt.warn(err);
-	  } else {
-	    grunt.log.write('error: '+err+"\n");
-	  }
-	}
+    } else {
+      grunt.log.write('error: '+err+"\n");
+    }
+  }
     this.callback.apply(this.context,[this,true]);
   }
 };
@@ -148,10 +147,10 @@ var ConvertCommand={
     if (err !== undefined && err !== null) {
       if (this.context.data.fatals === true) {
         grunt.warn(err);
-	  } else {
-	    grunt.log.write('error: '+err+"\n");
-	  }
-	}
+    } else {
+      grunt.log.write('error: '+err+"\n");
+    }
+  }
     this.callback.apply(this.context,[this,true]);
   }
 };
